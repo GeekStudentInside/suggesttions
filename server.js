@@ -12,21 +12,21 @@ var nodes = {};
 
 var updateOptions=function(header){
     return {
-        hostname:'http://geekstudentinside.herokuapp.com/',
-        port:1993,
+        hostname:'http://geekstudentinside.herokuapp.com',
+        port:80,
         path:'/getProducts',
-        method:'POST',
+        method:'GET'/*,
         headers:{
             'Content-Type':'application/x-www-form-encoded',
             'Content-Length':header.length
-        }
+        }*/
     };
 };
 
 var getOptions={
-    hostname:'localhost',
-    port:1993,
-    path:'/',
+    hostname:'http://geekstudentinside.herokuapp.com',
+    port:80,
+    path:'/getProducts',
     method:'GET'
 };
 
@@ -104,6 +104,11 @@ var getSuggestions=function(ids){
 var getData=http.request(getOptions,function(res){
     
     res.on('data',function(graph){
+        
+        //for now test value
+        graph=JSON.stringify([{"article1":1,"article2":2,"weight":0.5},
+                      {"article1":2,"article2":3,"weight":0.7}]);
+
         console.log('got graph');
         console.log('graph:'+graph);
         var list=JSON.parse(graph);
