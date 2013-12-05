@@ -168,12 +168,13 @@ var getData=http.request(getOptions,function(res){
             res.end();
             console.log(nodes);
         });
-        app.get(function(req,res){
-            res.writeHead(200);
-            res.write("suggestions server running");
-            res.end();
-        });
-        app.listen(80);
+       
     });
+    app.get(function(req,res){
+        res.writeHead(200);
+        res.write("suggestions server running");
+        res.end();
+    });
+    app.listen(80);
 });
 getData.end();
