@@ -12,9 +12,9 @@ var nodes = {};
 
 var updateOptions=function(header){
     return {
-        hostname:'localhost',
+        hostname:'http://geekstudentinside.herokuapp.com/',
         port:1993,
-        path:'/',
+        path:'/getProducts',
         method:'POST',
         headers:{
             'Content-Type':'application/x-www-form-encoded',
@@ -118,6 +118,10 @@ var getData=http.request(getOptions,function(res){
         app.post('/search',function(req,res){
             console.log('recieved request');
             console.log(req.body);
+            //for now test value
+            req.body=[{"article1":1,"article2":2,"weight":0.5},
+                      {"article1":2,"article2":3,"weight":0.7}];
+
             var post = req.body.search;
             var acc=post.accepted;
             console.log('accepxted');
