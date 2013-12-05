@@ -102,7 +102,7 @@ var getSuggestions=function(ids){
 
 
 var getData=http.request(getOptions,function(res){
-    
+    res.on('error',function(){ console.log('stuff');});
     res.on('data',function(graph){
         
         //for now test value
@@ -171,11 +171,12 @@ var getData=http.request(getOptions,function(res){
        
     });
 });
+var port = process.env.PORT || 5000;
 
 app.get(function(req,res){
     res.writeHead(200);
     res.write("suggestions server running");
     res.end();
 });
-app.listen(80);
+app.listen(port);
 getData.end();
