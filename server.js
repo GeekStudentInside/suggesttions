@@ -112,6 +112,12 @@ var getData=http.get(getLink,function(res){
            search: {accepted:[liste d'ids],rejectede:[list d'ids]}
         **/
         app.use(express.bodyParser());
+        app.options('/search',function(req,res){
+             res.writeHead(200,{'Content-Type':'application/json',
+                               'Access-Control-Allow-Origin':'*',
+                              'Access-Control-Allow-Methods':'POST'});
+            res.end();
+        });
         app.post('/search',function(req,res){
             console.log('recieved request');
             console.log(req.body);
