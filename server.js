@@ -10,7 +10,6 @@ var node=function(id){
 };
 
 var nodes = {};
-
 var updateOptions= {
         hostname:'http://172.17.2.163',
         port:9000,
@@ -72,7 +71,7 @@ var toList=function(dictionary){
                 });
     }
     return rV;
-}
+};
 
 var getTwoClosest=function(id){
     if(id===undefined){
@@ -159,7 +158,9 @@ var getData=http.get(getLink,function(res){
             
             
 
-            res.writeHead(200,{'Content-Type':'application/json'});
+            res.writeHead(200,{'Content-Type':'application/json',
+                               'Access-Control-Allow-Origin':'*',
+                              'Access-Control-Allow-Methods':'POST'});
             res.write(resultString);
             res.end();
             console.log(nodes);
