@@ -8,5 +8,10 @@
     "start": "node server.js"
   },
   "author": "",
-  "license": "BSD-2-Clause"
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "logfmt": "~0.17.0",
+    "request": "~2.28.0",
+    "express": "~3.4.6"
+  }
 }

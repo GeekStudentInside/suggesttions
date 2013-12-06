@@ -1,6 +1,6 @@
 var http=require('http');
 var express=require('express');
-
+var logfmt = require('logfmt');
 var request = require('request');
 var INFINITY=21000;
 var app = express(); 
@@ -174,7 +174,9 @@ app.get('/',function(req,res){
     res.write("suggestions server running");
     res.end();
 });*/
-app.listen(port);
+app.listen(port,function(){
+    console.log('listening to server');
+});
 console.log('yoyo');
 getData.on('error',function(err){
     console.log(err);
