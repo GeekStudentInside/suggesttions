@@ -1,6 +1,7 @@
 var http=require('http');
 var express=require('express');
 
+var request = require('request');
 var INFINITY=21000;
 var app = express(); 
 var node=function(id){
@@ -10,23 +11,20 @@ var node=function(id){
 
 var nodes = {};
 
-var updateOptions=function(header){
-    return {
-        hostname:'http://geekstudentinside.herokuapp.com',
-        port:80,
-        path:'/getProducts',
-        method:'GET'/*,
+var updateOptions= {
+        hostname:'http://172.17.2.163',
+        port:9000,
+        path:'/setWeight',
+        method:'POST',
         headers:{
-            'Content-Type':'application/x-www-form-encoded',
-            'Content-Length':header.length
-        }*/
-    };
+            'Content-Type':'application/json'      
+        }
 };
 
 var getOptions={
-    hostname:'http://geekstudentinside.herokuapp.com',
-    port:80,
-    path:'/getProducts',
+    hostname:'http://172.17.2.163',
+    port:9000,
+    path:'/getLinks',
     method:'GET'
 };
 
@@ -44,7 +42,6 @@ var addLink = function(id1,id2,weight){
     get(id1).links[id2]=weight;
     get(id2).links[id1]=weight;
 };
-
 var linkExists = function(id1,id2){
     return get(id1).links[id2]!==undefined;
 };
@@ -56,7 +53,7 @@ var modifyLink=function(id1,id2,f){
     }
     get(id1).links[id2]=f(get(id1).links[id2]);
     var weight=(get(id2).links[id1]=get(id1).links[id2]);
-    return {'id1':id1,'id2':id2,'val':weight};
+    return {'article1':id1.toString(),'article2':id2.toString(),'weight':weight.toString()};
 };
 
 var incrementLink=function(id1,id2){
@@ -101,19 +98,15 @@ var getSuggestions=function(ids){
 };
 
 
-var getData=http.request(getOptions,function(res){
-    res.on('error',function(){ console.log('stuff');});
+var getLink="http://geekstudentinside.herokuapp.com/getLinks";
+var getData=http.get(getLink,function(res){
+    console.log('yo');
     res.on('data',function(graph){
-        
-        //for now test value
-        graph=JSON.stringify([{"article1":1,"article2":2,"weight":0.5},
-                      {"article1":2,"article2":3,"weight":0.7}]);
-
         console.log('got graph');
         console.log('graph:'+graph);
         var list=JSON.parse(graph);
         list.forEach(function(elt){
-            addLink(elt.article1,elt.article2,elt.weight);
+            addLink(elt.article1.id,elt.article2.id,elt.weight);
         });
         /**
            dans le body:
@@ -123,10 +116,6 @@ var getData=http.request(getOptions,function(res){
         app.post('/search',function(req,res){
             console.log('recieved request');
             console.log(req.body);
-            //for now test value
-            req.body=[{"article1":1,"article2":2,"weight":0.5},
-                      {"article1":2,"article2":3,"weight":0.7}];
-
             var post = req.body.search;
             var acc=post.accepted;
             console.log('accepxted');
@@ -155,16 +144,23 @@ var getData=http.request(getOptions,function(res){
             });
             
             var results = suggestions.slice(0,5);
-            var upvalString=JSON.stringify(results);
-            var update=http.request(updateOptions(upvalString),function(res){
-                
-            });
-            update.write("upvalString");
-            update.end();
+            var resultString=JSON.stringify(results);
+            var upvalString = JSON.stringify(upVal);
+            console.log(upvalString);
+            console.log('got here');
+            
+            request.post({url: 'http://geekstudentinside.herokuapp.com/setWeight',
+                          body:upvalString,
+                          headers:{'content-type':'application/json'}},
+                         function(error,response,body){
+                             console.log('the body');
+                             console.log(body);
+                         });
+            
             
 
             res.writeHead(200,{'Content-Type':'application/json'});
-            res.write(upvalString);
+            res.write(resultString);
             res.end();
             console.log(nodes);
         });
@@ -172,11 +168,14 @@ var getData=http.request(getOptions,function(res){
     });
 });
 var port = process.env.PORT || 5000;
-
-app.get(function(req,res){
+/*
+app.get('/',function(req,res){
     res.writeHead(200);
     res.write("suggestions server running");
     res.end();
-});
+});*/
 app.listen(port);
-getData.end();
+console.log('yoyo');
+getData.on('error',function(err){
+    console.log(err);
+});
